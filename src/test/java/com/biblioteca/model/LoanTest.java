@@ -20,7 +20,7 @@ class LoanTest {
     void setUp() {
         author = new Author(1L, "Test Author", "Country", 1900);
         book = new Book(1L, "Test Book", "ISBN123", author, 2000, "Description", 5, 5);
-        user = new User(1L, "Test User", "test@example.com", "+34-123456789");
+        user = new User(1L, "Test User", "test@example.com", "MEMBER001", "Test City", true);
     }
 
     private Loan createLoan(Book book, User user, LocalDate loanDate, LocalDate dueDate) {
@@ -86,7 +86,7 @@ class LoanTest {
         
         assertEquals(user, loan.getUser());
         
-        User newUser = new User(2L, "New User", "new@example.com", "+34-987654321");
+        User newUser = new User(2L, "New User", "new@example.com", "MEMBER002", "New City", true);
         loan.setUser(newUser);
         assertEquals(newUser, loan.getUser());
     }
