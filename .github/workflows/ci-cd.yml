@@ -168,11 +168,11 @@ jobs:
 
       - name: Set up Docker Compose
         run: |
-          docker-compose --version
+          docker compose --version
 
       - name: Start Services
         run: |
-          docker-compose up -d
+          docker compose up -d
           sleep 10
 
       - name: Health Check
@@ -190,7 +190,7 @@ jobs:
 
       - name: Stop Services
         if: always()
-        run: docker-compose down
+        run: docker compose down
 
   build-status:
     if: always()
