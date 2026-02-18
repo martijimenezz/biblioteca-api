@@ -1,0 +1,5 @@
+docker:
+  postgres:
+    version: 15-alpine
+  app:
+    port: 8080
