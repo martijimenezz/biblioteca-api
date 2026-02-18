@@ -10,24 +10,27 @@ class UserTest {
 
     private User user;
 
-    private User createUser(String name, String email, String phone) {
+    private User createUser(String name, String email, String memberId) {
         User user = new User();
         user.setName(name);
         user.setEmail(email);
-        user.setPhone(phone);
+        user.setMemberId(memberId);
+        user.setActive(true);
         return user;
     }
 
     @Test
     @DisplayName("Should create User with all fields")
     void testUserConstructor() {
-        user = new User(1L, "John Doe", "john@example.com", "+34-987654321");
+        user = new User(1L, "John Doe", "john@example.com", "MEMBER001", "Madrid", true);
         
         assertNotNull(user);
         assertEquals(1L, user.getId());
         assertEquals("John Doe", user.getName());
         assertEquals("john@example.com", user.getEmail());
-        assertEquals("+34-987654321", user.getPhone());
+        assertEquals("MEMBER001", user.getMemberId());
+        assertEquals("Madrid", user.getCity());
+        assertTrue(user.getActive());
     }
 
     @Test
@@ -39,13 +42,13 @@ class UserTest {
         assertNull(user.getId());
         assertNull(user.getName());
         assertNull(user.getEmail());
-        assertNull(user.getPhone());
+        assertNull(user.getMemberId());
     }
 
     @Test
     @DisplayName("Should set and get user name")
     void testSetAndGetName() {
-        user = createUser("Jane Smith", "jane@example.com", "+34-666555444");
+        user = createUser("Jane Smith", "jane@example.com", "MEMBER002");
         
         assertEquals("Jane Smith", user.getName());
         
@@ -56,7 +59,7 @@ class UserTest {
     @Test
     @DisplayName("Should set and get user email")
     void testSetAndGetEmail() {
-        user = createUser("Alice", "alice@example.com", "+34-111222333");
+        user = createUser("Alice", "alice@example.com", "MEMBER003");
         
         assertEquals("alice@example.com", user.getEmail());
         
@@ -65,34 +68,35 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("Should set and get user phone")
-    void testSetAndGetPhone() {
-        user = createUser("Bob", "bob@example.com", "+34-444555666");
+    @DisplayName("Should set and get member ID")
+    void testSetAndGetMemberId() {
+        user = createUser("Bob", "bob@example.com", "MEMBER004");
         
-        assertEquals("+34-444555666", user.getPhone());
+        assertEquals("MEMBER004", user.getMemberId());
         
-        user.setPhone("+34-999888777");
-        assertEquals("+34-999888777", user.getPhone());
+        user.setMemberId("MEMBER005");
+        assertEquals("MEMBER005", user.getMemberId());
     }
 
     @Test
-    @DisplayName("Should validate user with different phone formats")
-    void testDifferentPhoneFormats() {
-        user = createUser("User1", "user1@example.com", "999-888-7777");
-        assertEquals("999-888-7777", user.getPhone());
+    @DisplayName("Should set and get user city")
+    void testSetAndGetCity() {
+        user = createUser("User", "user@example.com", "MEMBER006");
         
-        user = createUser("User2", "user2@example.com", "(555) 123-4567");
-        assertEquals("(555) 123-4567", user.getPhone());
+        assertNull(user.getCity());
+        
+        user.setCity("Barcelona");
+        assertEquals("Barcelona", user.getCity());
     }
 
     @Test
-    @DisplayName("Should handle optional phone field")
-    void testOptionalPhone() {
-        user = createUser("User", "user@example.com", null);
+    @DisplayName("Should manage user active status")
+    void testActiveStatus() {
+        user = createUser("User", "user@example.com", "MEMBER007");
         
-        assertNull(user.getPhone());
+        assertTrue(user.getActive());
         
-        user.setPhone("+34-123456789");
-        assertEquals("+34-123456789", user.getPhone());
+        user.setActive(false);
+        assertFalse(user.getActive());
     }
 }

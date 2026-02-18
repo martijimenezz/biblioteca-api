@@ -91,6 +91,77 @@ biblioteca-api/
    - return_date
    - status
 
+## Configuración de Variables de Entorno
+
+### Usando archivo `.env`
+
+La aplicación utiliza un archivo `.env` para gestionar variables de entorno de forma segura. NO comitees este archivo al repositorio (está en `.gitignore`).
+
+1. Copia el archivo de ejemplo:
+```bash
+cp .env.example .env
+```
+
+2. Edita `.env` con tus valores (especialmente para credenciales en producción):
+```
+POSTGRES_DB=biblioteca
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=tu_contraseña_segura
+POSTGRES_PORT=5432
+SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/biblioteca
+APP_PORT=8080
+```
+
+3. Ejecuta Docker Compose:
+```bash
+docker-compose up -d
+```
+
+Docker Compose cargará automáticamente las variables desde `.env`.
+
+## Cambios Realizados (Feedback del Profesor)
+
+### ✅ 1. Gestión de Variables de Entorno
+- **Creado**: Archivo `.env` para variables sensibles
+- **Creado**: Archivo `.env.example` como plantilla
+- **Actualizado**: `docker-compose.yml` ahora referencia variables desde `.env`
+- Las credenciales ya no están en texto plano en el código
+
+### ✅ 2. Tests para Entidades
+- **Creado**: `AuthorTest.java` - Tests para entidad Author con JUnit fixtures
+- **Creado**: `BookTest.java` - Tests para entidad Book con relaciones
+- **Creado**: `UserTest.java` - Tests para entidad User
+- **Creado**: `LoanTest.java` - Tests para entidad Loan (la más compleja)
+- Todos los tests usan fixtures de JUnit en lugar de solo confiar en `@BeforeEach`
+
+### ✅ 3. Optimización del Workflow CI/CD
+- **Removido**: Job `setup` redundante que no hacía nada útil
+- **Combinado**: Unit tests y Entity tests en un solo job `test`
+- **Optimizado**: Eliminadas configuraciones de Java repetidas
+- **Mejora**: El workflow ahora es más eficiente sin dependencias innecesarias
+- Los jobs `code-quality` e `integration-tests` se ejecutan en paralelo
+
+### ✅ 4. Automatización de Fixtures
+- **Actualizado**: `docker-compose.yml` ahora monta `fixtures.sql` en `/docker-entrypoint-initdb.d/`
+- Los fixtures se cargan automáticamente cuando se inicia PostgreSQL
+- En GitHub Actions se ejecuta `psql` para crear la BD antes de tests
+
+## Estructura del Workflow Optimizado
+
+```
+test (Entity & Unit Tests)      code-quality      integration-tests
+        ↓                            ↓                      ↓
+        └────────────┬───────────────┴───────────────────┘
+                     ↓
+                   build
+                     ↓
+                docker-build
+                     ↓
+            acceptance-tests
+                     ↓
+              build-status
+```
+
 ## Instalación y Ejecución
 
 ### Requisitos Previos
