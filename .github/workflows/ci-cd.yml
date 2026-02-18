@@ -154,23 +154,55 @@ jobs:
         run: |
           docker compose --version
 
+      - name: Build Docker Image
+        run: |
+          docker build -t biblioteca-api:latest .
+
       - name: Start Services
         run: |
           docker compose up -d
-          sleep 10
+          sleep 15
+
+      - name: Check Service Logs
+        run: |
+          echo "=== Checking service logs ==="
+          docker compose logs || true
+          echo "=== Waiting for app to be ready ==="
+          for i in {1..30}; do
+            if curl -s http://localhost:8080/api/authors > /dev/null 2>&1; then
+              echo "✓ App is ready on attempt $i"
+              break
+            fi
+            echo "Waiting for app... attempt $i/30"
+            sleep 2
+          done
 
       - name: Health Check
         run: |
-          curl http://localhost:8080/api/authors || true
-          curl http://localhost:8080/api/books || true
-          curl http://localhost:8080/api/users || true
-          curl http://localhost:8080/api/loans || true
+          echo "Testing API endpoints..."
+          curl -v http://localhost:8080/api/authors || true
+          curl -v http://localhost:8080/api/books || true
+          curl -v http://localhost:8080/api/users || true
+          curl -v http://localhost:8080/api/loans || true
 
       - name: Run Acceptance Tests
         run: |
           echo "Testing API endpoints..."
           curl -X GET http://localhost:8080/api/authors \
-            -H "Content-Type: application/json" || echo "API test passed"
+            -H "Content-Type: application/json" -v || echo "API test result"
+          
+          # Test different endpoints
+          curl -X GET http://localhost:8080/api/books -v || true
+          curl -X GET http://localhost:8080/api/users -v || true
+          curl -X GET http://localhost:8080/api/loans -v || true
+
+      - name: Collect Docker Logs  
+        if: always()
+        run: |
+          echo "=== App Container Logs ==="
+          docker logs biblioteca_app || true
+          echo "=== DB Container Logs ==="
+          docker logs biblioteca_postgres || true
 
       - name: Stop Services
         if: always()
