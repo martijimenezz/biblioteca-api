@@ -76,10 +76,10 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 10s
+          --health-retries 10
         ports:
           - 5432:5432
 
@@ -93,8 +93,17 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo 'Waiting for PostgreSQL to start...'
+            sleep 2
+          done
+        env:
+          PGPASSWORD: password
+
       - name: Run Integration Tests
-        run: mvn test -Dtest=*ControllerIT
+        run: mvn test -Dtest=*ControllerIT -X
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/biblioteca
           SPRING_DATASOURCE_USERNAME: postgres
