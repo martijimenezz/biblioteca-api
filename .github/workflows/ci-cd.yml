@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Set up Java environment
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -25,10 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Code Quality Checks
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -45,10 +45,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Unit Tests
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -59,7 +59,7 @@ jobs:
 
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: unit-test-results
           path: target/surefire-reports/
@@ -84,10 +84,10 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -102,7 +102,7 @@ jobs:
 
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: integration-test-results
           path: target/surefire-reports/
@@ -112,10 +112,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Application
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -125,7 +125,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-jar
           path: target/biblioteca-api-*.jar
@@ -135,7 +135,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Docker Image
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -153,7 +153,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Acceptance Tests
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Docker Compose
         run: |
