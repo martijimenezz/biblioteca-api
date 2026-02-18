@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("integration-test")
 @DisplayName("BookController Integration Tests")
 @Transactional
 class BookControllerIT {

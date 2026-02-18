@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("integration-test")
 @DisplayName("LoanController Integration Tests")
 @Transactional
 class LoanControllerIT {
