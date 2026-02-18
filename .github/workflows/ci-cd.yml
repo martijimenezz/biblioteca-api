@@ -7,9 +7,9 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  setup:
+  test:
     runs-on: ubuntu-latest
-    name: Set up Java environment
+    name: Unit & Entity Tests
     steps:
       - uses: actions/checkout@v4
       
@@ -20,8 +20,17 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Run Unit & Entity Tests
+        run: mvn test -Dtest="*ServiceTest,*Test" -DexcludedGroups="integration"
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: target/surefire-reports/
+
   code-quality:
-    needs: setup
     runs-on: ubuntu-latest
     name: Code Quality Checks
     steps:
@@ -40,32 +49,7 @@ jobs:
       - name: Run SpotBugs
         run: mvn compile -q || true
 
-  unit-tests:
-    needs: setup
-    runs-on: ubuntu-latest
-    name: Unit Tests
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-
-      - name: Run Unit Tests
-        run: mvn test -Dtest=*ServiceTest
-
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit-test-results
-          path: target/surefire-reports/
-
   integration-tests:
-    needs: setup
     runs-on: ubuntu-latest
     name: Integration Tests
     services:
@@ -119,7 +103,7 @@ jobs:
           path: target/surefire-reports/
 
   build:
-    needs: [unit-tests, integration-tests, code-quality]
+    needs: [test, integration-tests, code-quality]
     runs-on: ubuntu-latest
     name: Build Application
     steps:
